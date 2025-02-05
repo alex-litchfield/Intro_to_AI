@@ -89,19 +89,150 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    """
+    THIS IS THE PSEUDOCODE!!
+
+    fringe = node
+    while True:
+        if fringe empty:
+            return "failure"
+        node.removeFront
+        if goal-test:
+            return node 
+        for child-node:
+            fringe.insert(child_node)    """
+    
+    # Initial variables
+    visited_nodes = set() # Set of nodes that have already been visited
+    fringe = util.Stack() # The fringe, otherwise known as the stack data structure
+    directions_list = [] # List of directions which the pacman agent took
+    
+    # Add first node/direction tuple to the fringe
+    fringe.push((problem.getStartState(), directions_list))
+
+    # Infinite loop
+    while True:
+        # If fringe is empty, end the loop
+        if fringe.isEmpty():
+            print("failure")
+            return current_node_directions
+
+        # Node/direction tuple in the stack is removed and set to current node variables
+        current_node_state, current_node_directions = fringe.pop()
+
+        # Check if the current node is the goal state, return if true
+        if problem.isGoalState(current_node_state):
+            return current_node_directions
+        # Check if the current node is in the set of visited nodes
+        if current_node_state not in visited_nodes:
+            visited_nodes.add(current_node_state) # Add current node to the list of visited nodes
+            for i in problem.getSuccessors(current_node_state): # loop through each successor node
+                # Creating distinct variables for later use
+                successor_node_state = i[0]
+                successor_node_directions = i[1]
+                # If the successor node state is not already in the visited node set
+                if successor_node_state not in visited_nodes:
+                    combined_directions = [] # Complete list of directions that will lead to the successor node
+                    # For each direction in the current node direction list, add to the combined directions list
+                    for j in current_node_directions:
+                        combined_directions.append(j)
+                    # Appends the entire list of successor node directions as a single item in the combined_directions list
+                    combined_directions.append(successor_node_directions)
+                    # Put the successor node in stack
+                    fringe.push((successor_node_state, combined_directions))
+ 
 
 def breadthFirstSearch(problem):
     """
     Search the shallowest nodes in the search tree first.
     """
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    # Initial variables
+    visited_nodes = set() # Set of nodes that have already been visited
+    fringe = util.Queue() # The fringe, otherwise known as the queue data structure
+    directions_list = [] # List of directions which the pacman agent took
+
+    # Add first node/direction tuple to the fringe
+    fringe.push((problem.getStartState(), directions_list))
+
+    # Infinite loop
+    while True:
+        # If fringe is empty, end the loop
+        if fringe.isEmpty():
+            print("failure")
+            return current_node_directions
+
+        # Node/direction tuple in the queue is removed and set to current node variables
+        current_node_state, current_node_directions = fringe.pop()
+
+        # Check if the current node is the goal state, return if true
+        if problem.isGoalState(current_node_state):
+            return current_node_directions
+        # Check if the current node is in the set of visited nodes
+        if current_node_state not in visited_nodes:
+            visited_nodes.add(current_node_state) # Add current node to the list of visited nodes
+            for i in problem.getSuccessors(current_node_state): # loop through each successor node
+                # Creating distinct variables for later use
+                successor_node_state = i[0]
+                successor_node_directions = i[1]
+                # If the successor node state is not already in the visited node set
+                if successor_node_state not in visited_nodes:
+                    combined_directions = [] # Complete list of directions that will lead to the successor node
+                    # For each direction in the current node direction list, add to the combined directions list
+                    for j in current_node_directions:
+                        combined_directions.append(j)
+                    # Appends the entire list of successor node directions as a single item in the combined_directions list
+                    combined_directions.append(successor_node_directions)
+                    # Put the successor node in queue
+                    fringe.push((successor_node_state, combined_directions))
 
 def uniformCostSearch(problem):
     "Search the node of least total cost first. "
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    # Initial variables
+    visited_nodes = set() # Set of nodes that have already been visited
+    fringe = util.PriorityQueue() # The fringe, otherwise known as the priority queue data structure
+    directions_list = [] # List of directions which the pacman agent took
+    cost = 0 # Initial cost is 0
+
+    # Add first node/direction tuple to the fringe
+    fringe.push((problem.getStartState(), directions_list, cost), cost)
+
+    # Infinite loop
+    while True:
+        # If fringe is empty, end the loop
+        if fringe.isEmpty():
+            print("failure")
+            return current_node_directions
+
+        # Node/direction tuple in the priority queue is removed and set to current node variables
+        current_node_state, current_node_directions, current_node_cost = fringe.pop()
+
+        # Check if the current node is the goal state, return if true
+        if problem.isGoalState(current_node_state):
+            return current_node_directions
+        # Check if the current node is in the set of visited nodes
+        if current_node_state not in visited_nodes:
+            visited_nodes.add(current_node_state) # Add current node to the list of visited nodes
+            for i in problem.getSuccessors(current_node_state): # loop through each successor node
+                # Creating distinct variables for later use
+                successor_node_state = i[0]
+                successor_node_directions = i[1]
+                successor_node_cost = i[2]
+                # If the successor node state is not already in the visited node set
+                if successor_node_state not in visited_nodes:
+                    combined_directions = [] # Complete list of directions that will lead to the successor node
+                    # For each direction in the current node direction list, add to the combined directions list
+                    for j in current_node_directions:
+                        combined_directions.append(j)
+                    # Appends the entire list of successor node directions as a single item in the combined_directions list
+                    combined_directions.append(successor_node_directions)
+                    # Calculate combined cost
+                    combined_cost = current_node_cost + successor_node_cost
+                    # Put the successor node in priority queue (second cost value is used as priority)
+                    fringe.push((successor_node_state, combined_directions, combined_cost), combined_cost)
 
 def nullHeuristic(state, problem=None):
     """
@@ -113,7 +244,50 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     "Search the node that has the lowest combined cost and heuristic first."
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+        # Initial variables
+    visited_nodes = set() # Set of nodes that have already been visited
+    fringe = util.PriorityQueue() # The fringe, otherwise known as the priority queue data structure
+    directions_list = [] # List of directions which the pacman agent took
+    cost = 0 # Initial cost is 0
+
+    # Add first node/direction tuple to the fringe
+    fringe.push((problem.getStartState(), directions_list, cost), cost)
+
+    # Infinite loop
+    while True:
+        # If fringe is empty, end the loop
+        if fringe.isEmpty():
+            print("failure")
+            return current_node_directions
+
+        # Node/direction tuple in the priority queue is removed and set to current node variables
+        current_node_state, current_node_directions, current_node_cost = fringe.pop()
+
+        # Check if the current node is the goal state, return if true
+        if problem.isGoalState(current_node_state):
+            return current_node_directions
+        # Check if the current node is in the set of visited nodes
+        if current_node_state not in visited_nodes:
+            visited_nodes.add(current_node_state) # Add current node to the list of visited nodes
+            for i in problem.getSuccessors(current_node_state): # loop through each successor node
+                # Creating distinct variables for later use
+                successor_node_state = i[0]
+                successor_node_directions = i[1]
+                successor_node_cost = i[2]
+                # If the successor node state is not already in the visited node set
+                if successor_node_state not in visited_nodes:
+                    combined_directions = [] # Complete list of directions that will lead to the successor node
+                    # For each direction in the current node direction list, add to the combined directions list
+                    for j in current_node_directions:
+                        combined_directions.append(j)
+                    # Appends the entire list of successor node directions as a single item in the combined_directions list
+                    combined_directions.append(successor_node_directions)
+                    # Calculate combined cost
+                    combined_cost = current_node_cost + successor_node_cost
+                    # Calculating priority (utilizes the defined "heuristic" from searchAgents.py that is specified in terminal arguments)
+                    priority = combined_cost + heuristic(successor_node_state, problem)
+                    # Put the successor node in priority queue
+                    fringe.push((successor_node_state, combined_directions, combined_cost), priority)
 
 
 # Abbreviations
