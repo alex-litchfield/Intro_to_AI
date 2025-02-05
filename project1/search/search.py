@@ -133,12 +133,8 @@ def depthFirstSearch(problem):
                 successor_node_directions = i[1]
                 # If the successor node state is not already in the visited node set
                 if successor_node_state not in visited_nodes:
-                    combined_directions = [] # Complete list of directions that will lead to the successor node
-                    # For each direction in the current node direction list, add to the combined directions list
-                    for j in current_node_directions:
-                        combined_directions.append(j)
-                    # Appends the entire list of successor node directions as a single item in the combined_directions list
-                    combined_directions.append(successor_node_directions)
+                    # Complete list of directions that will lead to the successor node
+                    combined_directions = current_node_directions + [successor_node_directions]
                     # Put the successor node in stack
                     fringe.push((successor_node_state, combined_directions))
  
@@ -180,12 +176,8 @@ def breadthFirstSearch(problem):
                 successor_node_directions = i[1]
                 # If the successor node state is not already in the visited node set
                 if successor_node_state not in visited_nodes:
-                    combined_directions = [] # Complete list of directions that will lead to the successor node
-                    # For each direction in the current node direction list, add to the combined directions list
-                    for j in current_node_directions:
-                        combined_directions.append(j)
-                    # Appends the entire list of successor node directions as a single item in the combined_directions list
-                    combined_directions.append(successor_node_directions)
+                    # Complete list of directions that will lead to the successor node
+                    combined_directions = current_node_directions + [successor_node_directions]
                     # Put the successor node in queue
                     fringe.push((successor_node_state, combined_directions))
                 #print("CURR STATE:", current_node_state)
@@ -225,12 +217,8 @@ def uniformCostSearch(problem):
                 successor_node_cost = i[2]
                 # If the successor node state is not already in the visited node set
                 if successor_node_state not in visited_nodes:
-                    combined_directions = [] # Complete list of directions that will lead to the successor node
-                    # For each direction in the current node direction list, add to the combined directions list
-                    for j in current_node_directions:
-                        combined_directions.append(j)
-                    # Appends the entire list of successor node directions as a single item in the combined_directions list
-                    combined_directions.append(successor_node_directions)
+                    # Complete list of directions that will lead to the successor node
+                    combined_directions = current_node_directions + [successor_node_directions]
                     # Calculate combined cost
                     combined_cost = current_node_cost + successor_node_cost
                     # Put the successor node in priority queue (second cost value is used as priority)
@@ -246,7 +234,8 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     "Search the node that has the lowest combined cost and heuristic first."
     "*** YOUR CODE HERE ***"
-        # Initial variables
+
+    # Initial variables
     visited_nodes = set() # Set of nodes that have already been visited
     fringe = util.PriorityQueue() # The fringe, otherwise known as the priority queue data structure
     directions_list = [] # List of directions which the pacman agent took
@@ -278,12 +267,8 @@ def aStarSearch(problem, heuristic=nullHeuristic):
                 successor_node_cost = i[2]
                 # If the successor node state is not already in the visited node set
                 if successor_node_state not in visited_nodes:
-                    combined_directions = [] # Complete list of directions that will lead to the successor node
-                    # For each direction in the current node direction list, add to the combined directions list
-                    for j in current_node_directions:
-                        combined_directions.append(j)
-                    # Appends the entire list of successor node directions as a single item in the combined_directions list
-                    combined_directions.append(successor_node_directions)
+                    # Complete list of directions that will lead to the successor node
+                    combined_directions = current_node_directions + [successor_node_directions]
                     # Calculate combined cost
                     combined_cost = current_node_cost + successor_node_cost
                     # Calculating priority (utilizes the defined "heuristic" from searchAgents.py that is specified in terminal arguments)
