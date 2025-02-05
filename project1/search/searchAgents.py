@@ -289,12 +289,16 @@ class CornersProblem(search.SearchProblem):
     def getStartState(self):
         "Returns the start state (in your state space, not the full Pacman state space)"
         "*** YOUR CODE HERE ***"
-        
+        return (self.startingPosition, ())
 
     def isGoalState(self, state):
         "Returns whether this search state is a goal state of the problem"
         "*** YOUR CODE HERE ***"
-        #util.raiseNotDefined()
+        for i in self.corners:
+            corners_visited = state[1]
+            if i not in corners_visited:
+                return False
+        return True
 
     def getSuccessors(self, state):
         """
@@ -319,9 +323,23 @@ class CornersProblem(search.SearchProblem):
 
             "*** YOUR CODE HERE ***"
 
+            x,y = state[0] # state_cords[0] is X and state_cords[1] is y
+            corners_visited = state[1]
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            if not self.walls[nextx][nexty]:
+                new_corners_visited = []
+                for i in corners_visited:
+                    new_corners_visited.append(i)
+                if (nextx, nexty) in self.corners and (nextx, nexty) not in new_corners_visited:
+                    new_corners_visited.append((nextx, nexty))
+                nextState = ((nextx, nexty), tuple(new_corners_visited))
+                cost = 1
+                successors.append( ( nextState, action, cost) )
 
-
+        # Bookkeeping for display purposes
         self._expanded += 1
+        
         return successors
 
     def getCostOfActions(self, actions):
@@ -355,7 +373,14 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    return 0 # Default to trivial solution
+    xy1 = state[0]
+    visited_corners = state[1]
+    corner_distance_list = []
+    for i in corners:
+        if i not in visited_corners:
+            corner_distance_list.append(abs(xy1[0] - i[0]) + abs(xy1[1] - i[1]))
+    return min(corner_distance_list)
+    #return 0 # Default to trivial solution
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"

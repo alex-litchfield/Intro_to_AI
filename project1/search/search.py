@@ -176,6 +176,7 @@ def breadthFirstSearch(problem):
             for i in problem.getSuccessors(current_node_state): # loop through each successor node
                 # Creating distinct variables for later use
                 successor_node_state = i[0]
+                #print("SUCCESSOR STATE:", i[0], "ORIGINAL STATE:", current_node_state)
                 successor_node_directions = i[1]
                 # If the successor node state is not already in the visited node set
                 if successor_node_state not in visited_nodes:
@@ -187,6 +188,7 @@ def breadthFirstSearch(problem):
                     combined_directions.append(successor_node_directions)
                     # Put the successor node in queue
                     fringe.push((successor_node_state, combined_directions))
+                #print("CURR STATE:", current_node_state)
 
 def uniformCostSearch(problem):
     "Search the node of least total cost first. "
