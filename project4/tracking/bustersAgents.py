@@ -144,3 +144,25 @@ class GreedyBustersAgent(BustersAgent):
             [beliefs for i, beliefs in enumerate(self.ghostBeliefs)
              if livingGhosts[i+1]]
         "*** YOUR CODE HERE ***"
+        
+        # Your agent should first find the most likely position
+        # of each remaining uncaptured ghost, then choose an action that
+        # minimizes the maze distance to the closest ghost
+
+        # Find the most likely position for each uncaptured ghost
+        mostLikelyGhostPositions = []
+        for i in livingGhostPositionDistributions:
+            mostLikelyGhostPositions.append(i.argMax())
+        # Find the closest ghost storing the smallest distance and the closest ghost itself
+        closestGhost, minDistance, selectedAction = 0, 0, 0
+        for j in mostLikelyGhostPositions:
+            distanceBetween2Points = self.distancer.getDistance(pacmanPosition, j)
+            if minDistance == 0 or distanceBetween2Points < minDistance:
+                minDistance, closestGhost = distanceBetween2Points, j
+        # Choose a legal action that brings the agent closer to the closest ghost
+        for k in legal:
+            newPosition = Actions.getSuccessor(pacmanPosition, k)
+            distanceBetween2Points = self.distancer.getDistance(newPosition, closestGhost)
+            if distanceBetween2Points < minDistance:
+                minDistance, selectedAction = distanceBetween2Points, k
+        return selectedAction
