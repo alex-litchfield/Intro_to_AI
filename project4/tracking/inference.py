@@ -360,9 +360,15 @@ class ParticleFilter(InferenceModule):
         self.particles = []
         "*** YOUR CODE HERE ***"
         
-        self.particles = self.legalPositions
-
-        
+        # Distributes particles evenly across positions
+        legalPositions = self.legalPositions
+        # Take the number of particles and divide by length of legal positions
+        # Should number a float, it is rounded up to the nearest whole float
+        # Subtract 1 from this float and then convert to an integer to be usable range
+        particleRange = int(round(self.numParticles / len(legalPositions), 0) - 1)
+        for i in range(particleRange):
+            for j in legalPositions:
+                self.particles.append(j)
 
     def observeUpdate(self, observation, gameState):
         """
@@ -411,7 +417,7 @@ class ParticleFilter(InferenceModule):
         for oldPos in self.particles:
             newPosDist = self.getPositionDistribution(gameState, oldPos)
             newParticles.append(newPosDist.sample())
-
+        # Set self.particles to hold the newParticles list
         self.particles = newParticles
 
     def getBeliefDistribution(self):
@@ -429,6 +435,7 @@ class ParticleFilter(InferenceModule):
         beliefDistribution = DiscreteDistribution()
         for particle in self.particles:
             beliefDistribution[particle] = beliefDistribution[particle] + 1
+        # Normalize new belief distribution
         beliefDistribution.normalize()
         return beliefDistribution
 
