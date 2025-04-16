@@ -57,9 +57,58 @@ class MiraClassifier:
         representing a vector of values.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        bestAccuracy = -1
+        bestC = Cgrid[0]
+        bestWeights = None
 
-    def classify(self, data ):
+        for C in Cgrid:
+            # Initialize fresh weights for each C
+            current_weights = {label: util.Counter() for label in self.legalLabels}
+            
+            for _ in range(self.max_iterations):
+                for datum, true_label in zip(trainingData, trainingLabels):
+                    # Compute scores using Counter dot product
+                    scores = util.Counter()
+                    for label in self.legalLabels:
+                        scores[label] = datum * current_weights[label]
+                    
+                    predicted_label = scores.argMax()
+
+                    if predicted_label != true_label:
+                        # Calculate tau
+                        wy_dot_f = scores[true_label]
+                        wyprime_dot_f = scores[predicted_label]
+                        numerator = (wyprime_dot_f - wy_dot_f) + 1.0  # Note sign flip
+                        squared_norm = sum(v**2 for v in datum.values())
+                        denominator = 2.0 * squared_norm if squared_norm != 0 else float('inf')
+                        tau = min(numerator / denominator, C)
+                        tau = max(tau, 0.0)
+
+                        # Update weights
+                        for feature in datum.keys():
+                            current_weights[true_label][feature] += tau * datum[feature]
+                            current_weights[predicted_label][feature] -= tau * datum[feature]
+
+            # Validation
+            correct = 0
+            for val_datum, val_label in zip(validationData, validationLabels):
+                scores = util.Counter()
+                for label in self.legalLabels:
+                    scores[label] = val_datum * current_weights[label]
+                if scores.argMax() == val_label:
+                    correct += 1
+            accuracy = float(correct) / len(validationLabels)
+
+            # Update best weights
+            if accuracy > bestAccuracy or (accuracy == bestAccuracy and C < bestC):
+                bestAccuracy = accuracy
+                bestC = C
+                bestWeights = {k: v.copy() for k,v in current_weights.items()}
+
+        # Set final weights to best found
+        self.weights = bestWeights
+
+    def classify(self, data):
         """
         Classifies each datum as the label that most closely matches the prototype vector
         for that label.  See the project description for details.
